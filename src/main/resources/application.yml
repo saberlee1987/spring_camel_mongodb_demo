@@ -1,0 +1,79 @@
+server:
+  port: 9010
+  max-http-header-size: 756000
+  jetty:
+    threads:
+      min: 100
+      max: 3000
+      idle-timeout: 10000
+    connection-idle-timeout: 10000
+    accesslog:
+      enabled: true
+
+
+service:
+  api:
+    base-path: /services/${spring.application.name}
+  swagger:
+    path: /services/${spring.application.name}/v3/api-docs
+    title: ${spring.application.name}
+    version: 'version1.0.0-1401/07/29'
+
+spring:
+  application:
+    name: spring_camel_mongodb_demo
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: saber66
+      password: AdminSaber66
+      dataBase: admin
+      dataBaseCollection: mydb
+      collection: persons
+
+camel:
+  springboot:
+    main-run-controller: true
+    jmx-management-statistics-level: extended
+    endpoint-runtime-statistics-enabled: true
+    jmx-enabled: true
+    producer-template-cache-size: 3000
+  dataformat:
+    jackson:
+      auto-discover-object-mapper: true
+      pretty-print: true
+  component:
+    mongodb:
+      mongo-connection: mongoBean
+
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    display-operation-id: true
+
+  api-docs:
+    path: ${service.swagger.path}
+
+hawtio:
+  authenticationEnabled: false
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+      sla:
+        "[http.server.requests]": 10ms, 100ms
+      percentiles:
+        "[http.server.requests]": 0.5, 0.75, 0.95, 0.98, 0.99, 0.999, 1.0
+
+  endpoints:
+    web:
+      base-path: /actuators/${spring.application.name}
+      exposure:
+        include: '*'
