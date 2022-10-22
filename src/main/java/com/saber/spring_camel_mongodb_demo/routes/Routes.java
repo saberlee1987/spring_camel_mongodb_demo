@@ -12,6 +12,10 @@ public interface Routes {
 	String FIND_PERSON_BY_NATIONAL_CODE_ROUTE_GROUP = "find-person-by-nationalCode-route-group";
 	String FIND_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY = "find-person-by-nationalCode-route-gateway";
 	String FIND_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY_OUT = "find-person-by-nationalCode-route-gateway-out";
+
+	String FIND_PERSON_BY_AGE_ROUTE_GROUP = "find-person-by-age-route-group";
+	String FIND_PERSON_BY_AGE_ROUTE_GATEWAY = "find-person-by-age-route-gateway";
+	String FIND_PERSON_BY_AGE_ROUTE_GATEWAY_OUT = "find-person-by-age-route-gateway-out";
 	
 	String ADD_PERSON_ROUTE_ID = "add-person-route-id";
 	String ADD_PERSON_ROUTE = "add-person-route";
@@ -32,6 +36,7 @@ public interface Routes {
 	String DELETE_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY_OUT = "delete-person-by-nationalCode-route-gateway-out";
 
 	String RESOURCE_NOTFOUND_EXCEPTION_ROUTE = "resource-notfound-exception-route";
+	String BAD_REQUEST_EXCEPTION_ROUTE = "bad-request-exception-route";
 	String RESOURCE_DUPLICATION_EXCEPTION_ROUTE = "resource-duplication-exception-route";
 
 	String THROWS_RESOURCE_DUPLICATION_EXCEPTION_ROUTE = "throws-resource-duplication-exception-route";

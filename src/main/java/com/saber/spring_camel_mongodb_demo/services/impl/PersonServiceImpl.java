@@ -1,9 +1,6 @@
 package com.saber.spring_camel_mongodb_demo.services.impl;
 
-import com.saber.spring_camel_mongodb_demo.dto.AddPersonResponseDto;
-import com.saber.spring_camel_mongodb_demo.dto.ErrorResponse;
-import com.saber.spring_camel_mongodb_demo.dto.PersonDto;
-import com.saber.spring_camel_mongodb_demo.dto.PersonResponse;
+import com.saber.spring_camel_mongodb_demo.dto.*;
 import com.saber.spring_camel_mongodb_demo.exceptions.GatewayException;
 import com.saber.spring_camel_mongodb_demo.routes.Headers;
 import com.saber.spring_camel_mongodb_demo.routes.Routes;
@@ -27,9 +24,22 @@ public class PersonServiceImpl implements PersonService {
         Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.FIND_ALL_PERSON_ROUTE_GATEWAY), exchange -> {
             exchange.getIn().setHeader(Headers.correlation, correlation);
         });
-        checkException("findAllPerson",responseExchange,correlation);
+        checkException("findAllPerson", responseExchange, correlation);
         PersonResponse response = responseExchange.getIn().getBody(PersonResponse.class);
-        log.info("Response for findAllPerson ===> {}",response);
+        log.info("Response for findAllPerson ===> {}", response);
+        return response;
+    }
+
+    @Override
+    public PersonResponse findAllPersonByAgeWithCondition(String correlation, Integer age, ConditionEnum conditionEnum) {
+        Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.FIND_PERSON_BY_AGE_ROUTE_GATEWAY), exchange -> {
+            exchange.getIn().setHeader(Headers.correlation, correlation);
+            exchange.getIn().setHeader(Headers.condition, conditionEnum);
+            exchange.getIn().setHeader(Headers.age, age);
+        });
+        checkException("findAllPersonByAgeWithCondition", responseExchange, correlation);
+        PersonResponse response = responseExchange.getIn().getBody(PersonResponse.class);
+        log.info("Response for findAllPersonByAgeWithCondition ===> {}", response);
         return response;
     }
 
@@ -39,29 +49,29 @@ public class PersonServiceImpl implements PersonService {
             exchange.getIn().setHeader(Headers.correlation, correlation);
             exchange.getIn().setHeader(Headers.nationalCode, nationalCode);
         });
-        checkException("findPersonByNationalCode",responseExchange,correlation);
+        checkException("findPersonByNationalCode", responseExchange, correlation);
         PersonDto response = responseExchange.getIn().getBody(PersonDto.class);
-        log.info("Response for findAllPerson ===> {}",response);
+        log.info("Response for findAllPerson ===> {}", response);
         return response;
     }
 
     @Override
-    public AddPersonResponseDto addPerson(PersonDto personDto,String correlation ) {
+    public AddPersonResponseDto addPerson(PersonDto personDto, String correlation) {
         Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.ADD_PERSON_ROUTE_GATEWAY), exchange -> {
             exchange.getIn().setHeader(Headers.correlation, correlation);
             exchange.getIn().setBody(personDto);
         });
-        checkException("addPerson",responseExchange,correlation);
+        checkException("addPerson", responseExchange, correlation);
         AddPersonResponseDto response = responseExchange.getIn().getBody(AddPersonResponseDto.class);
-        log.info("Response for addPerson ===> {}",response);
+        log.info("Response for addPerson ===> {}", response);
         return response;
     }
 
-    private void checkException(String methodName, Exchange responseExchange,String correlation) {
+    private void checkException(String methodName, Exchange responseExchange, String correlation) {
         int statusCode = responseExchange.getIn().getHeader(Exchange.HTTP_RESPONSE_CODE, Integer.class);
         if (statusCode != HttpStatus.OK.value()) {
             ErrorResponse errorResponse = responseExchange.getIn().getBody(ErrorResponse.class);
-            log.error("Error for correlation : {} , {} , statusCode {} , with body {}",correlation, methodName, statusCode, errorResponse);
+            log.error("Error for correlation : {} , {} , statusCode {} , with body {}", correlation, methodName, statusCode, errorResponse);
             throw new GatewayException(statusCode, correlation, errorResponse);
         }
     }

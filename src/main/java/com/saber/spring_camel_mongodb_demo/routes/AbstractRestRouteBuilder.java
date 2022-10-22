@@ -2,6 +2,7 @@ package com.saber.spring_camel_mongodb_demo.routes;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.saber.spring_camel_mongodb_demo.exceptions.BadRequestException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -69,13 +70,19 @@ public class AbstractRestRouteBuilder extends RouteBuilder {
 		onException(ResourceDuplicationException.class)
 				.maximumRedeliveries(0)
 				.handled(true)
-				.log(LoggingLevel.ERROR,"Error for ${in.header.url} , correlation : ${in.header.correlation}  ResourceDuplicationException with error ===> "+exceptionMessage())
+				.log(LoggingLevel.ERROR,"Error for  correlation : ${in.header.correlation}  ResourceDuplicationException with error ===> "+exceptionMessage())
 				.to(String.format("direct:%s",Routes.RESOURCE_DUPLICATION_EXCEPTION_ROUTE));
 
 		onException(ResourceNotFoundException.class)
 				.maximumRedeliveries(0)
 				.handled(true)
-				.log(LoggingLevel.ERROR,"Error for ${in.header.url} , correlation : ${in.header.correlation}  ResourceNotFoundException with error ===> "+exceptionMessage())
+				.log(LoggingLevel.ERROR,"Error for  correlation : ${in.header.correlation}  ResourceNotFoundException with error ===> "+exceptionMessage())
+				.to(String.format("direct:%s",Routes.RESOURCE_NOTFOUND_EXCEPTION_ROUTE));
+
+		onException(BadRequestException.class)
+				.maximumRedeliveries(0)
+				.handled(true)
+				.log(LoggingLevel.ERROR,"Error for  correlation : ${in.header.correlation}  BadRequestException with error ===> "+exceptionMessage())
 				.to(String.format("direct:%s",Routes.RESOURCE_NOTFOUND_EXCEPTION_ROUTE));
 
 		onException(HttpOperationFailedException.class)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.saber.spring_camel_mongodb_demo.dto.ErrorResponse;
 import com.saber.spring_camel_mongodb_demo.dto.ServiceErrorResponseEnum;
 import com.saber.spring_camel_mongodb_demo.dto.ValidationDto;
+import com.saber.spring_camel_mongodb_demo.exceptions.BadRequestException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -128,6 +129,30 @@ public class ExceptionResponseRoute extends RouteBuilder {
                     exchange.getIn().setBody(errorResponse);
                 });
 
+
+        from(String.format("direct:%s", Routes.BAD_REQUEST_EXCEPTION_ROUTE))
+                .routeId(Routes.BAD_REQUEST_EXCEPTION_ROUTE)
+                .routeGroup(Routes.EXCEPTION_HANDLER_ROUTE_GROUP)
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(406))
+                .process(exchange -> {
+                    BadRequestException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, BadRequestException.class);
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    errorResponse.setCode(ServiceErrorResponseEnum.INPUT_VALIDATION_EXCEPTION.getCode());
+                    errorResponse.setMessage(ServiceErrorResponseEnum.INPUT_VALIDATION_EXCEPTION.getMessage());
+
+                    List<ValidationDto> validationDtoList = new ArrayList<>();
+
+                    ValidationDto validationDto = new ValidationDto();
+                    validationDto.setFieldName(exception.getFieldName());
+                    validationDto.setDetailMessage(exception.getDetailMessage());
+
+                    validationDtoList.add(validationDto);
+                    errorResponse.setValidations(validationDtoList);
+
+                    log.error("Error for badRequest-exception statusCode {} ====> {}", HttpStatus.NOT_ACCEPTABLE.value(), errorResponse);
+
+                    exchange.getIn().setBody(errorResponse);
+                });
 
         from(String.format("direct:%s", Routes.RESOURCE_DUPLICATION_EXCEPTION_ROUTE))
                 .routeId(Routes.RESOURCE_DUPLICATION_EXCEPTION_ROUTE)

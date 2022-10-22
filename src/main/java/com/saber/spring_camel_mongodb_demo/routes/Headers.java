@@ -6,4 +6,6 @@ public interface Headers {
     String correlation = "correlation";
     String nationalCode = "nationalCode";
     String requestBody = "requestBody";
+    String condition = "condition";
+    String age = "age";
 }
