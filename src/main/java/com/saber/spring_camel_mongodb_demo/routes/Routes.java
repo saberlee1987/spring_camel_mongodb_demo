@@ -16,9 +16,17 @@ public interface Routes {
 	String FIND_PERSON_BY_AGE_ROUTE_GROUP = "find-person-by-age-route-group";
 	String FIND_PERSON_BY_AGE_ROUTE_GATEWAY = "find-person-by-age-route-gateway";
 	String FIND_PERSON_BY_AGE_ROUTE_GATEWAY_OUT = "find-person-by-age-route-gateway-out";
-	
-	String ADD_PERSON_ROUTE_ID = "add-person-route-id";
-	String ADD_PERSON_ROUTE = "add-person-route";
+
+	String FIND_PERSON_BY_COUNTRY_ROUTE_GROUP = "find-person-by-country-route-group";
+	String FIND_PERSON_BY_COUNTRY_ROUTE_GATEWAY = "find-person-by-country-route-gateway";
+	String FIND_PERSON_BY_COUNTRY_ROUTE_GATEWAY_OUT = "find-person-by-country-route-gateway-out";
+
+	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GROUP = "find-person-by-country-and-language-route-group";
+	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GATEWAY = "find-person-by-country-and-language-route-gateway";
+	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GATEWAY_OUT = "find-person-by-country-and-language-route-gateway-out";
+
+
+
 	String ADD_PERSON_ROUTE_GROUP = "add-person-route-group";
 	String ADD_PERSON_ROUTE_GATEWAY = "add-person-route-gateway";
 	String ADD_PERSON_ROUTE_GATEWAY_OUT = "add-person-route-gateway-out";
@@ -36,11 +44,13 @@ public interface Routes {
 	String DELETE_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY_OUT = "delete-person-by-nationalCode-route-gateway-out";
 
 	String RESOURCE_NOTFOUND_EXCEPTION_ROUTE = "resource-notfound-exception-route";
+	String DATA_NOTFOUND_EXCEPTION_ROUTE = "data-notfound-exception-route";
 	String BAD_REQUEST_EXCEPTION_ROUTE = "bad-request-exception-route";
 	String RESOURCE_DUPLICATION_EXCEPTION_ROUTE = "resource-duplication-exception-route";
 
 	String THROWS_RESOURCE_DUPLICATION_EXCEPTION_ROUTE = "throws-resource-duplication-exception-route";
 	String THROWS_RESOURCE_NOTFOUND_EXCEPTION_ROUTE = "throws-resource-notfound-exception-route";
+	String THROWS_DATA_NOTFOUND_EXCEPTION_ROUTE = "throws-data-notfound-exception-route";
 
 	String HTTP_OPERATION_EXCEPTION_HANDLER_ROUTE = "http-operation-exception-handler-route";
 	String TIMEOUT_EXCEPTION_HANDLER_ROUTE = "timeout-exception-handler-route";

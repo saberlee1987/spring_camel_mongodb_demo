@@ -3,6 +3,7 @@ package com.saber.spring_camel_mongodb_demo.routes;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.saber.spring_camel_mongodb_demo.exceptions.BadRequestException;
+import com.saber.spring_camel_mongodb_demo.exceptions.DataNotFoundException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +84,13 @@ public class AbstractRestRouteBuilder extends RouteBuilder {
 				.maximumRedeliveries(0)
 				.handled(true)
 				.log(LoggingLevel.ERROR,"Error for  correlation : ${in.header.correlation}  BadRequestException with error ===> "+exceptionMessage())
-				.to(String.format("direct:%s",Routes.RESOURCE_NOTFOUND_EXCEPTION_ROUTE));
+				.to(String.format("direct:%s",Routes.BAD_REQUEST_EXCEPTION_ROUTE));
+
+		onException(DataNotFoundException.class)
+				.maximumRedeliveries(0)
+				.handled(true)
+				.log(LoggingLevel.ERROR,"Error for  correlation : ${in.header.correlation}  DataNotFoundException with error ===> "+exceptionMessage())
+				.to(String.format("direct:%s",Routes.DATA_NOTFOUND_EXCEPTION_ROUTE));
 
 		onException(HttpOperationFailedException.class)
 				.handled(true)
@@ -106,6 +113,11 @@ public class AbstractRestRouteBuilder extends RouteBuilder {
 					String nationalCode = exchange.getIn().getHeader(Headers.nationalCode,String.class);
 					throw new ResourceNotFoundException(String.format("person with nationalCode %s does not exist",nationalCode));
 				});
-				
+		from(String.format("direct:%s",Routes.THROWS_DATA_NOTFOUND_EXCEPTION_ROUTE) )
+				.routeId(Routes.THROWS_DATA_NOTFOUND_EXCEPTION_ROUTE)
+				.routeGroup(Routes.EXCEPTION_HANDLER_ROUTE_GROUP)
+				.process(exchange -> {
+					throw new DataNotFoundException("your data notfound");
+				});
 	}
 }

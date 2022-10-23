@@ -7,7 +7,9 @@ public enum ServiceErrorResponseEnum {
 	AUTHENTICATION_EXCEPTION(4,"خطای اهراز هویت"),
 	TIMEOUT_EXCEPTION(5,"خطا در ارتباط با سرویس دهنده"),
 	RESOURCE_NOT_FOUND_EXCEPTION(6,"اطلاعات مورد نظر یافت نشد"),
-	RESOURCE_DUPLICATION_EXCEPTION(7,"اطلاعات تکراری است"),;
+	RESOURCE_DUPLICATION_EXCEPTION(7,"اطلاعات تکراری است"),
+	DATA_NOT_FOUND_EXCEPTION(8,"داده مورد نظر یافت نشد"),
+	;
 	int code;
 	String message;
 	

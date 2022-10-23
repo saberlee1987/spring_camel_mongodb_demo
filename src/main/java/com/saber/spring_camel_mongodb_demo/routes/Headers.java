@@ -8,4 +8,6 @@ public interface Headers {
     String requestBody = "requestBody";
     String condition = "condition";
     String age = "age";
+    String country = "country";
+    String language = "language";
 }

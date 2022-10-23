@@ -5,6 +5,7 @@ import com.saber.spring_camel_mongodb_demo.dto.ErrorResponse;
 import com.saber.spring_camel_mongodb_demo.dto.ServiceErrorResponseEnum;
 import com.saber.spring_camel_mongodb_demo.dto.ValidationDto;
 import com.saber.spring_camel_mongodb_demo.exceptions.BadRequestException;
+import com.saber.spring_camel_mongodb_demo.exceptions.DataNotFoundException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -185,6 +186,23 @@ public class ExceptionResponseRoute extends RouteBuilder {
                             , errorResponse);
                     exchange.getMessage().setBody(errorResponse);
                 });
+
+        from(String.format("direct:%s", Routes.DATA_NOTFOUND_EXCEPTION_ROUTE))
+                .routeId(Routes.DATA_NOTFOUND_EXCEPTION_ROUTE)
+                .routeGroup(Routes.EXCEPTION_HANDLER_ROUTE_GROUP)
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(406))
+                .process(exchange -> {
+                    DataNotFoundException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, DataNotFoundException.class);
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    errorResponse.setCode(ServiceErrorResponseEnum.RESOURCE_NOT_FOUND_EXCEPTION.getCode());
+                    errorResponse.setMessage(ServiceErrorResponseEnum.RESOURCE_NOT_FOUND_EXCEPTION.getMessage());
+                    errorResponse.setOriginalMessage(String.format("{\"code\":%d,\"message\":\"%s\"}", ServiceErrorResponseEnum.RESOURCE_NOT_FOUND_EXCEPTION.getCode(), exception.getMessage()));
+                    log.error("Error for  correlation {} ,  DataNotFoundException ===> {}"
+                            ,exchange.getIn().getHeader(Headers.correlation)
+                            , errorResponse);
+                    exchange.getMessage().setBody(errorResponse);
+                });
+
 
         from(String.format("direct:%s", Routes.HTTP_OPERATION_EXCEPTION_HANDLER_ROUTE))
                 .routeId(Routes.HTTP_OPERATION_EXCEPTION_HANDLER_ROUTE)

@@ -27,24 +27,23 @@ public class FindAllPersonByAgeRoute extends AbstractRestRouteBuilder {
                     ConditionEnum condition = exchange.getIn().getHeader(Headers.condition, ConditionEnum.class);
                     switch (condition) {
                         case Equal:
-                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, constant(Filters.eq("age", age)));
+                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, Filters.eq("age", age));
                             break;
                         case LESSThan:
-                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, constant(Filters.lt("age", age)));
+                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, Filters.lt("age", age));
                             break;
                         case LessEqual:
-                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, constant(Filters.lte("age", age)));
+                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, Filters.lte("age", age));
                             break;
                         case GreatThan:
-                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, constant(Filters.gt("age", age)));
+                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, Filters.gt("age", age));
                             break;
                         case GreatEqual:
-                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, constant(Filters.gte("age", age)));
+                            exchange.getIn().setHeader(MongoDbConstants.CRITERIA, Filters.gte("age", age));
                             break;
                         default:
                             throw new BadRequestException("condition","condition is invalid");
                     }
-                    System.out.println("test");
                 })
                 .to("mongodb:{{camel.component.mongodb.mongo-connection}}?database={{spring.data.mongodb.dataBaseCollection}}&collection={{spring.data.mongodb.collection}}")
                 .log("Response for find person with age ${in.header.age} with condition : ${in.header.condition} correlation ${in.header.correlation} ===> ${in.body}")
@@ -54,8 +53,8 @@ public class FindAllPersonByAgeRoute extends AbstractRestRouteBuilder {
                 .routeId(Routes.FIND_PERSON_BY_AGE_ROUTE_GATEWAY_OUT)
                 .routeGroup(Routes.FIND_PERSON_BY_AGE_ROUTE_GROUP)
                 .choice()
-                .when(body().isNull() )
-                    .to(String.format("direct:%s", Routes.THROWS_RESOURCE_NOTFOUND_EXCEPTION_ROUTE))
+                .when(body().isEqualTo("") )
+                    .to(String.format("direct:%s", Routes.THROWS_DATA_NOTFOUND_EXCEPTION_ROUTE))
                 .otherwise()
                 .marshal().json(JsonLibrary.Jackson)
                 .process(exchange -> {

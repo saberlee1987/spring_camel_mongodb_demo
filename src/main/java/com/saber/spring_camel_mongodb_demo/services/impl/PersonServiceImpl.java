@@ -44,6 +44,31 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public PersonResponse findAllPersonByCountry(String correlation, String country) {
+        Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.FIND_PERSON_BY_COUNTRY_ROUTE_GATEWAY), exchange -> {
+            exchange.getIn().setHeader(Headers.correlation, correlation);
+            exchange.getIn().setHeader(Headers.country, country);
+        });
+        checkException("findAllPersonByCountry", responseExchange, correlation);
+        PersonResponse response = responseExchange.getIn().getBody(PersonResponse.class);
+        log.info("Response for findAllPersonByCountry ===> {}", response);
+        return response;
+    }
+
+    @Override
+    public PersonResponse findAllPersonByCountryAndLanguage(String correlation, String country, String language) {
+        Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GATEWAY), exchange -> {
+            exchange.getIn().setHeader(Headers.correlation, correlation);
+            exchange.getIn().setHeader(Headers.country, country);
+            exchange.getIn().setHeader(Headers.language, language);
+        });
+        checkException("findAllPersonByCountryAndLanguage", responseExchange, correlation);
+        PersonResponse response = responseExchange.getIn().getBody(PersonResponse.class);
+        log.info("Response for findAllPersonByCountryAndLanguage ===> {}", response);
+        return response;
+    }
+
+    @Override
     public PersonDto findPersonByNationalCode(String correlation, String nationalCode) {
         Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.FIND_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY), exchange -> {
             exchange.getIn().setHeader(Headers.correlation, correlation);
