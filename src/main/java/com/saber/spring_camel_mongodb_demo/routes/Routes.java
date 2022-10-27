@@ -5,6 +5,10 @@ public interface Routes {
 	String FIND_ALL_PERSON_ROUTE_GROUP = "find-all-person-route-group";
 	String FIND_ALL_PERSON_ROUTE_GATEWAY = "find-all-person-route-gateway";
 	String FIND_ALL_PERSON_ROUTE_GATEWAY_OUT = "find-all-person-route-gateway-out";
+
+	String FIND_ALL_PERSON_COUNT_WITH_AGE_ROUTE_GROUP = "find-all-person-count-with-age-route-group";
+	String FIND_ALL_PERSON_COUNT_WITH_AGE_ROUTE_GATEWAY = "find-all-person-count-with-age-route-gateway";
+	String FIND_ALL_PERSON_COUNT_WITH_AGE_ROUTE_GATEWAY_OUT = "find-all-person-count-with-age-route-gateway-out";
 	
 	String FIND_PERSON_BY_NATIONAL_CODE_ROUTE = "find-person-by-nationalCode-route";
 	String FIND_PERSON_BY_NATIONAL_CODE_ROUTE_GROUP = "find-person-by-nationalCode-route-group";
@@ -23,6 +27,13 @@ public interface Routes {
 	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GATEWAY = "find-person-by-country-and-language-route-gateway";
 	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GATEWAY_OUT = "find-person-by-country-and-language-route-gateway-out";
 
+	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_COUNT_ROUTE_GROUP = "find-person-by-country-and-language-count-route-group";
+	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_COUNT_ROUTE_GATEWAY = "find-person-by-country-and-language-count-route-gateway";
+	String FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_COUNT_ROUTE_GATEWAY_OUT = "find-person-by-country-and-language-count-route-gateway-out";
+
+	String FIND_PERSON_BY_COUNTRY_COUNT_ROUTE_GROUP = "find-person-by-country-count-route-group";
+	String FIND_PERSON_BY_COUNTRY_COUNT_ROUTE_GATEWAY = "find-person-by-country-count-route-gateway";
+	String FIND_PERSON_BY_COUNTRY_COUNT_ROUTE_GATEWAY_OUT = "find-person-by-country-count-route-gateway-out";
 
 
 	String ADD_PERSON_ROUTE_GROUP = "add-person-route-group";

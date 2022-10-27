@@ -29,7 +29,7 @@ public class FindAllPersonByCountryAndLanguageRoute extends AbstractRestRouteBui
                     ));
                 })
                 .to("mongodb:{{camel.component.mongodb.mongo-connection}}?database={{spring.data.mongodb.dataBaseCollection}}&collection={{spring.data.mongodb.collection}}")
-                .log("Response for find person with country ${in.header.country} and language ${in.header.language} w with condition : ${in.header.condition} correlation ${in.header.correlation} ===> ${in.body}")
+                .log("Response for find person with country ${in.header.country} and language ${in.header.language}  with condition : ${in.header.condition} correlation ${in.header.correlation} ===> ${in.body}")
                 .to(String.format("direct:%s", Routes.FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GATEWAY_OUT));
 
         from(String.format("direct:%s", Routes.FIND_PERSON_BY_COUNTRY_AND_LANGUAGE_ROUTE_GATEWAY_OUT))

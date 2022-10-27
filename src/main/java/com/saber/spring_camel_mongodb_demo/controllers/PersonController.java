@@ -162,6 +162,96 @@ public class PersonController {
         return ResponseEntity.ok(this.personService.findAllPersonByAgeWithCondition(correlation, age, conditionEnum));
     }
 
+    @GetMapping(value = "/findAllCount/{age}")
+    @Operation(summary = "findByAgeWithConditionCount", description = "findByAgeWithConditionCount api", method = "GET",
+            parameters = {
+                    @Parameter(name = "age", in = ParameterIn.PATH, required = true, example = "25", description = "age"),
+                    @Parameter(name = "condition", in = ParameterIn.QUERY, required = true, example = "gt", description = "condition", schema = @Schema(implementation = ConditionEnum.class)),
+            })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PersonResponseCountDto.class))}),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "406", description = "NOT_ACCEPTABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "503", description = "SERVICE_UNAVAILABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "504", description = "GATEWAY_TIMEOUT",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+
+    })
+    public ResponseEntity<PersonResponseCountDto> findByAgeWithConditionCount(@PathVariable(name = "age")
+                                                                 @NotNull(message = "age is Required")
+                                                                 @Valid
+                                                                         Integer age, @RequestParam(name = "condition") @NotNull(message = "condition is Required") ConditionEnum conditionEnum, HttpServletRequest httpServletRequest) {
+
+        String correlation = getCorrelation(httpServletRequest);
+        return ResponseEntity.ok(this.personService.findAllPersonByAgeWithConditionCount(correlation, age, conditionEnum));
+    }
+
+    @GetMapping(value = "/findAllByCountryCount")
+    @Operation(summary = "findAllByCountryCount", description = "findAllByCountryCount api", method = "GET",
+            parameters = {
+                    @Parameter(name = "country", in = ParameterIn.QUERY, required = true, example = "iran", description = "country")
+            })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PersonResponseCountDto.class))}),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "406", description = "NOT_ACCEPTABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "503", description = "SERVICE_UNAVAILABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "504", description = "GATEWAY_TIMEOUT",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+
+    })
+    public ResponseEntity<PersonResponseCountDto> findAllByCountryCount(@RequestParam(name = "country") @NotBlank(message = "country is required") String country, HttpServletRequest httpServletRequest) {
+
+        String correlation = getCorrelation(httpServletRequest);
+        return ResponseEntity.ok(this.personService.findAllPersonByCountryCount(correlation, country));
+    }
+
+    @GetMapping(value = "/findAllByCountryAndLanguageCount")
+    @Operation(summary = "findAllByCountryAndLanguageCount", description = "findAllByCountryAndLanguageCount api", method = "GET",
+            parameters = {
+                    @Parameter(name = "country", in = ParameterIn.QUERY, required = true, example = "iran", description = "country"),
+                    @Parameter(name = "language", in = ParameterIn.QUERY, required = true, example = "persian", description = "language"),
+            })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PersonResponse.class))}),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "406", description = "NOT_ACCEPTABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "503", description = "SERVICE_UNAVAILABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "504", description = "GATEWAY_TIMEOUT",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+
+    })
+    public ResponseEntity<PersonResponseCountDto> findAllByCountryAndLanguageCount(@RequestParam(name = "country") @NotBlank(message = "country is required") String country,
+                                                                      @RequestParam(name = "language") @NotBlank(message = "language is required") String language, HttpServletRequest httpServletRequest) {
+
+        String correlation = getCorrelation(httpServletRequest);
+        return ResponseEntity.ok(this.personService.findAllPersonByCountryAndLanguageCount(correlation, country, language));
+    }
+
     @GetMapping(value = "/findAll")
     @Operation(summary = "findAll persons", description = "findAll persons api", method = "GET")
     @ApiResponses(value = {

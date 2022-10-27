@@ -2,6 +2,7 @@ package com.saber.spring_camel_mongodb_demo;
 
 import com.saber.spring_camel_mongodb_demo.dto.ConditionEnum;
 import com.saber.spring_camel_mongodb_demo.dto.PersonResponse;
+import com.saber.spring_camel_mongodb_demo.dto.PersonResponseCountDto;
 import com.saber.spring_camel_mongodb_demo.routes.Headers;
 import com.saber.spring_camel_mongodb_demo.routes.Routes;
 import org.apache.camel.Exchange;
@@ -10,13 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.UUID;
+
 @SpringBootTest
 class SpringCamelMongodbDemoApplicationTests {
 
 	@Autowired
 	private ProducerTemplate producerTemplate;
 
-	@Test
+	//@Test
 	void contextLoads() {
 		Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.FIND_PERSON_BY_AGE_ROUTE_GATEWAY), exchange -> {
 			exchange.getIn().setHeader(Headers.age, 45);
@@ -27,6 +30,17 @@ class SpringCamelMongodbDemoApplicationTests {
 
 		System.out.println(statusCode);
 		System.out.println(personResponse);
+	}
+
+	@Test
+	void testCount(){
+		Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.FIND_ALL_PERSON_COUNT_WITH_AGE_ROUTE_GATEWAY), exchange -> {
+			exchange.getIn().setHeader(Headers.correlation, UUID.randomUUID());
+			exchange.getIn().setHeader(Headers.age, 45);
+			exchange.getIn().setHeader(Headers.condition, ConditionEnum.GreatEqual);
+		});
+		String body = responseExchange.getIn().getBody(String.class);
+		System.out.println(body);
 	}
 
 }
