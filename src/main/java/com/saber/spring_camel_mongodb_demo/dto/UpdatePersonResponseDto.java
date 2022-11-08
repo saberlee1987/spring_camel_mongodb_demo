@@ -16,6 +16,9 @@ import javax.validation.constraints.NotBlank;
 public class UpdatePersonResponseDto {
     private Integer code;
     private String text;
+    private Integer matchedCount;
+    private Integer modifiedCount;
+    private Integer upsertedId;
 
     @Override
     public String toString() {

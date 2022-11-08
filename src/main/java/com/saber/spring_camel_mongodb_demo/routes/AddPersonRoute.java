@@ -31,18 +31,7 @@ public class AddPersonRoute extends AbstractRestRouteBuilder {
                     .when(body().isNotNull())
                        .to(String.format("direct:%s", Routes.THROWS_RESOURCE_DUPLICATION_EXCEPTION_ROUTE))
                     .otherwise()
-                        .process(exchange -> {
-                            PersonDto personDto = exchange.getIn().getHeader(Headers.requestBody,PersonDto.class);
-                            String country = personDto.getCountry();
-                            String language = personDto.getLanguage();
-                            String birthDate = personDto.getBirthDate();
-                            if (country.trim().toLowerCase().startsWith("ir") &&
-                                    (language.toLowerCase().trim().startsWith("per") ||  language.toLowerCase().trim().startsWith("fa")) ){
-                                birthDate = dateUtility.convertPersianToGregorianDate(birthDate);
-                            }
-                            personDto.setBirthDate(birthDate);
-                            exchange.getIn().setBody(personDto);
-                        })
+                        .to(String.format("direct:%s",Routes.DATE_CONVERTER_ROUTE))
                         .setHeader(MongoDbConstants.OPERATION_HEADER, constant("insert"))
                         .marshal().json(JsonLibrary.Jackson, PersonDto.class)
                         .to("mongodb:{{camel.component.mongodb.mongo-connection}}?database={{spring.data.mongodb.dataBaseCollection}}&collection={{spring.data.mongodb.collection}}")

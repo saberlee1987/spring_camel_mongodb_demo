@@ -380,6 +380,81 @@ public class PersonController {
 //		return ResponseEntity.ok(personService.deletePersonByNationalCode(nationalCode,correlation));
 //	}
 
+    @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "update person by nationalCode", description = "update person by nationalCode", method = "PUT",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "update person",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(name = "updatePerson by nationalCode", title = "updatePerson by nationalCode", implementation = PersonDto.class)
+                            , examples = @ExampleObject(name = "updatePerson by nationalCode", summary = "updatePerson by nationalCode",
+                            value = "{\n" +
+                                    "  \"firstName\": \"saber\",\n" +
+                                    "  \"lastName\": \"Azizi\",\n" +
+                                    "  \"nationalCode\": \"0079028748\",\n" +
+                                    "  \"age\": 34,\n" +
+                                    "  \"email\": \"saberazizi66@yahoo.com\",\n" +
+                                    "  \"mobile\": \"09365627895\",\n" +
+                                    "   \"country\": \"iran\",\n" +
+                                    "   \"language\" : \"persian\",\n" +
+                                    "   \"birthDate\" : \"1366/09/16\" \n" +
+                                    "}")
+                    )
+            ))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UpdatePersonResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "406", description = "NOT_ACCEPTABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "503", description = "SERVICE_UNAVAILABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "504", description = "GATEWAY_TIMEOUT",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+
+    })
+    public ResponseEntity<UpdatePersonResponseDto> updatePerson(@RequestBody @NotNull(message = "body is Required") @Valid PersonDto personDto, HttpServletRequest httpServletRequest) {
+        String correlation = getCorrelation(httpServletRequest);
+        return ResponseEntity.ok(personService.updatePerson(personDto, correlation));
+    }
+
+
+    @DeleteMapping(value = "/delete/{nationalCode}")
+    @Operation(summary = "deleteByNationalCode", description = "deleteByNationalCode api", method = "GET",
+            parameters = {
+                    @Parameter(name = "nationalCode", in = ParameterIn.PATH, required = true, example = "0079028748", description = "nationalCode")
+            })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DeletePersonResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "406", description = "NOT_ACCEPTABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "503", description = "SERVICE_UNAVAILABLE",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "504", description = "GATEWAY_TIMEOUT",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+
+    })
+    public ResponseEntity<DeletePersonResponseDto> deletePersonByNationalCode(@PathVariable(name = "nationalCode")
+                                                              @NotBlank(message = "nationalCode is Required")
+                                                              @Size(min = 10, max = 10, message = "nationalCode must be 10 digit")
+                                                              @Pattern(regexp = "\\d+", message = "Please Enter correct nationalCode")
+                                                              @Valid
+                                                                      String nationalCode, HttpServletRequest httpServletRequest) {
+
+        String correlation = getCorrelation(httpServletRequest);
+        return ResponseEntity.ok(this.personService.deletePerson(correlation, nationalCode));
+    }
+
     private String getCorrelation(HttpServletRequest httpServletRequest) {
         String correlation = "";
         correlation = httpServletRequest.getHeader(Headers.correlation);

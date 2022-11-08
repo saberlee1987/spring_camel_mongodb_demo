@@ -40,11 +40,10 @@ public interface Routes {
 	String ADD_PERSON_ROUTE_GATEWAY = "add-person-route-gateway";
 	String ADD_PERSON_ROUTE_GATEWAY_OUT = "add-person-route-gateway-out";
 	
-	String UPDATE_PERSON_ROUTE_ID = "update-person-route-id";
-	String UPDATE_PERSON_ROUTE = "update-person-route";
-	String UPDATE_PERSON_ROUTE_GROUP = "update-person-route-group";
-	String UPDATE_PERSON_ROUTE_GATEWAY = "update-person-route-gateway";
-	String UPDATE_PERSON_ROUTE_GATEWAY_OUT = "update-person-route-gateway-out";
+	String UPDATE_PERSON_BY_NATIONAL_CODE_ROUTE = "update-person-by-nationalCode-route";
+	String UPDATE_PERSON_BY_NATIONAL_CODE_ROUTE_GROUP = "update-person-by-nationalCode-route-group";
+	String UPDATE_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY = "update-person-by-nationalCode-route-gateway";
+	String UPDATE_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY_OUT = "update-person-by-nationalCode-route-gateway-out";
 	
 	String DELETE_PERSON_BY_NATIONAL_CODE_ROUTE_ID = "delete-person-by-nationalCode-route-id";
 	String DELETE_PERSON_BY_NATIONAL_CODE_ROUTE = "delete-person-by-nationalCode-route";
@@ -67,4 +66,5 @@ public interface Routes {
 	String BEAN_VALIDATION_EXCEPTION_HANDLER_ROUTE = "bean-validation-exception-handler-route";
 	String PREDICATE_EXCEPTION_HANDLER_ROUTE = "predicate-exception-handler-route";
 	String EXCEPTION_HANDLER_ROUTE_GROUP = "exception-handler-route-group";
+	String DATE_CONVERTER_ROUTE = "date-converter-route";
 }

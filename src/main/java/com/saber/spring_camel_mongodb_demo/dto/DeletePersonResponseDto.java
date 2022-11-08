@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 public class DeletePersonResponseDto {
     private Integer code;
     private String text;
+    private Integer deletedCount;
 
     @Override
     public String toString() {

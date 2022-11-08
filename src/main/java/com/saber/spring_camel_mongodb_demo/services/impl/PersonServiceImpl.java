@@ -128,6 +128,30 @@ public class PersonServiceImpl implements PersonService {
         return response;
     }
 
+    @Override
+    public UpdatePersonResponseDto updatePerson(PersonDto personDto, String correlation) {
+        Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.UPDATE_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY), exchange -> {
+            exchange.getIn().setHeader(Headers.correlation, correlation);
+            exchange.getIn().setBody(personDto);
+        });
+        checkException("updatePerson", responseExchange, correlation);
+        UpdatePersonResponseDto response = responseExchange.getIn().getBody(UpdatePersonResponseDto.class);
+        log.info("Response for updatePerson ===> {}", response);
+        return response;
+    }
+
+    @Override
+    public DeletePersonResponseDto deletePerson(String correlation, String nationalCode) {
+        Exchange responseExchange = producerTemplate.send(String.format("direct:%s", Routes.DELETE_PERSON_BY_NATIONAL_CODE_ROUTE_GATEWAY), exchange -> {
+            exchange.getIn().setHeader(Headers.correlation, correlation);
+            exchange.getIn().setHeader(Headers.nationalCode, nationalCode);
+        });
+        checkException("deletePerson", responseExchange, correlation);
+        DeletePersonResponseDto response = responseExchange.getIn().getBody(DeletePersonResponseDto.class);
+        log.info("Response for deletePerson ===> {}", response);
+        return response;
+    }
+
     private void checkException(String methodName, Exchange responseExchange, String correlation) {
         int statusCode = responseExchange.getIn().getHeader(Exchange.HTTP_RESPONSE_CODE, Integer.class);
         if (statusCode != HttpStatus.OK.value()) {

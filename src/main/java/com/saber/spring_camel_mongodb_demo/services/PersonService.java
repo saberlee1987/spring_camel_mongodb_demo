@@ -12,4 +12,6 @@ public interface PersonService {
     PersonResponseCountDto findAllPersonByCountryAndLanguageCount(String correlation, String country,String language);
     PersonDto findPersonByNationalCode(String correlation,String nationalCode);
     AddPersonResponseDto addPerson(PersonDto personDto,String correlation);
+    UpdatePersonResponseDto updatePerson(PersonDto personDto,String correlation);
+    DeletePersonResponseDto deletePerson(String correlation,String nationalCode);
 }
