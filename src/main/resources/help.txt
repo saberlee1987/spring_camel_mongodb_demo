@@ -1,0 +1,26 @@
+mongod --help for help commands
+mongod --dbpath directory --logpath a log file in one directory
+
+create mongod.cfg add below lines in file
+---- mongod.cfg
+storage:
+  dbPath: D:/mongodb/data/db
+  journal:
+    enabled: true
+
+systemLog:
+  destination: file
+  path: D:/mongodb/data/log/log.log
+
+net:
+  port: 27017
+  bindIp: 127.0.0.1
+
+---- mongod.cfg
+mongod -f mongod.cfg path --auth
+
+login :
+    >mongo -u saber66 -p AdminSaber66
+
+net start mongodb
+net stop mongodb
