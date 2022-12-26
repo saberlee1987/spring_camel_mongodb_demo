@@ -5,12 +5,14 @@ import com.google.gson.LongSerializationPolicy;
 import com.google.gson.ToNumberPolicy;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class StudentDto extends PersonDto{
+    private ObjectId _id;
     private String studentNumber;
     private String field;
     private List<Term> terms;

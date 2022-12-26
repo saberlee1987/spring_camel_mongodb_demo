@@ -3,9 +3,13 @@ package com.saber.spring_camel_mongodb_demo.dto;
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.google.gson.ToNumberPolicy;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Course {
     private String title;
     private Double score;
