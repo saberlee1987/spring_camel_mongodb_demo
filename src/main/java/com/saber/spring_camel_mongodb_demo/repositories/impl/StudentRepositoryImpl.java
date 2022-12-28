@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -41,6 +42,24 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
+    public Document getStudentByNationalCode(String nationalCode) {
+        MongoCursor<Document> studentCursor = getStudentCursorByNationalCode(nationalCode);
+        if (studentCursor.available() == 0) {
+            return null;
+        }
+        return studentCursor.next();
+    }
+
+    @Override
+    public Document getStudentByStudentNumber(String studentNumber) {
+        MongoCursor<Document> studentCursor = getStudentCursorByStudentNumber(studentNumber);
+        if (studentCursor.available() == 0) {
+            return null;
+        }
+        return studentCursor.next();
+    }
+
+    @Override
     public UpdateResult addTermToStudent(String nationalCode, String studentNumber, Double totalAverage, List<Document> termDocuments) {
 
         Document updateDocument = new Document();
@@ -61,6 +80,19 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     }
 
+    @Override
+    public List<Document> findAllStudents() {
+        MongoDatabase mydB = mongoClient.getDatabase("mydb");
+        MongoCollection<Document> student = mydB.getCollection("student");
+        FindIterable<Document> documents = student.find();
+        List<Document> studentDocuments = new ArrayList<>();
+        MongoCursor<Document> cursor = documents.cursor();
+        while (cursor.hasNext()){
+            studentDocuments.add(cursor.next());
+        }
+        return studentDocuments;
+    }
+
     private MongoCursor<Document> getStudentCursorByNationalCodeAndStudentNumber(String nationalCode, String studentNumber) {
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
         MongoCollection<Document> student = mydB.getCollection("student");
@@ -70,6 +102,20 @@ public class StudentRepositoryImpl implements StudentRepository {
                         Filters.eq("studentNumber", studentNumber)
                 )
         );
+        return studentDocuments.cursor();
+    }
+
+    private MongoCursor<Document> getStudentCursorByNationalCode(String nationalCode) {
+        MongoDatabase mydB = mongoClient.getDatabase("mydb");
+        MongoCollection<Document> student = mydB.getCollection("student");
+        FindIterable<Document> studentDocuments = student.find(Filters.eq("nationalCode", nationalCode));
+        return studentDocuments.cursor();
+    }
+
+    private MongoCursor<Document> getStudentCursorByStudentNumber(String studentNumber) {
+        MongoDatabase mydB = mongoClient.getDatabase("mydb");
+        MongoCollection<Document> student = mydB.getCollection("student");
+        FindIterable<Document> studentDocuments = student.find(Filters.eq("studentNumber", studentNumber));
         return studentDocuments.cursor();
     }
 }

@@ -68,15 +68,15 @@ class SpringCamelMongodbDemoApplicationTests {
         studentDto.setStudentNumber("943175737");
         studentDto.setField("computer");
 
-        Boolean insertStudentResult = studentService.insertStudent(studentDto);
+        AddStudentResponseDto addStudentResponseDto = studentService.insertStudent(UUID.randomUUID().toString(), studentDto);
 
-        System.out.println(insertStudentResult);
+        System.out.println(addStudentResponseDto);
 
     }
 
     @Test
     void showStudent() {
-        StudentDto studentDto = studentService.findStudentByNationalCodeAndStudentNumber("0079028748", "943175737");
+        StudentDto studentDto = studentService.findStudentByNationalCodeAndStudentNumber(UUID.randomUUID().toString(),"0079028748", "943175737");
         System.out.println(studentDto);
     }
 
@@ -85,7 +85,7 @@ class SpringCamelMongodbDemoApplicationTests {
 
         String nationalCode = "0079028748";
         String studentNumber = "943175737";
-        StudentDto student = studentService.findStudentByNationalCodeAndStudentNumber(nationalCode, studentNumber);
+        StudentDto student = studentService.findStudentByNationalCodeAndStudentNumber(UUID.randomUUID().toString(),nationalCode, studentNumber);
 
         // calculate old terms
         List<Term> oldTerms = student.getTerms() == null ? Collections.emptyList() : student.getTerms();

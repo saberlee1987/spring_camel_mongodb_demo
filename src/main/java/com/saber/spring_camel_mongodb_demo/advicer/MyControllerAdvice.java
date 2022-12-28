@@ -4,6 +4,8 @@ import com.saber.spring_camel_mongodb_demo.dto.ErrorResponse;
 import com.saber.spring_camel_mongodb_demo.dto.ServiceErrorResponseEnum;
 import com.saber.spring_camel_mongodb_demo.dto.ValidationDto;
 import com.saber.spring_camel_mongodb_demo.exceptions.GatewayException;
+import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
+import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -21,7 +24,7 @@ import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
-public class PersonControllerAdvice extends ResponseEntityExceptionHandler {
+public class MyControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = GatewayException.class)
     public ResponseEntity<Object> handleGatewayException(GatewayException gatewayException) {
@@ -70,5 +73,30 @@ public class PersonControllerAdvice extends ResponseEntityExceptionHandler {
 
         log.error("Error for handleMethodArgumentNotValid with body ===> {}",errorResponse);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(value = ResourceDuplicationException.class)
+    public ResponseEntity<?> resourceDuplicationException(ResourceDuplicationException exception) {
+        log.error("ResourceDuplicationException error ====> {}", exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setMessage(HttpStatus.BAD_REQUEST.toString());
+        errorResponse.setOriginalMessage(String.format("{\"code\":%d,\"message\":\"%s\"}",
+                HttpStatus.BAD_REQUEST.value(), exception.getMessage()));
+        log.error("ResourceDuplicationException error ====> {}", errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(value = ResourceNotFoundException.class)
+    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException exception) {
+        log.error("ResourceNotFoundException error ====> {}", exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.NOT_ACCEPTABLE.value());
+        errorResponse.setMessage(HttpStatus.NOT_ACCEPTABLE.toString());
+        errorResponse.setOriginalMessage(String.format("{\"code\":%d,\"message\":\"%s\"}",
+                HttpStatus.NOT_ACCEPTABLE.value(), exception.getMessage()));
+        log.error("ResourceNotFoundException error ====> {}", errorResponse);
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errorResponse);
     }
 }

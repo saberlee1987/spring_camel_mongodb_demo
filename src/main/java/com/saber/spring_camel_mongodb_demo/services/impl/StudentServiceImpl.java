@@ -2,10 +2,8 @@ package com.saber.spring_camel_mongodb_demo.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.result.InsertOneResult;
-import com.saber.spring_camel_mongodb_demo.dto.Course;
-import com.saber.spring_camel_mongodb_demo.dto.StudentDto;
-import com.saber.spring_camel_mongodb_demo.dto.StudentTermCourseDto;
-import com.saber.spring_camel_mongodb_demo.dto.Term;
+import com.mongodb.client.result.UpdateResult;
+import com.saber.spring_camel_mongodb_demo.dto.*;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import com.saber.spring_camel_mongodb_demo.repositories.StudentRepository;
@@ -31,7 +29,7 @@ public class StudentServiceImpl implements StudentService {
     private DateUtility dateUtility;
 
     @Override
-    public Boolean insertStudent(StudentDto studentDto) {
+    public AddStudentResponseDto insertStudent(String correlation, StudentDto studentDto) {
         checkStudentDuplicate(studentDto.getNationalCode(), studentDto.getStudentNumber());
         try {
             String country = studentDto.getCountry();
@@ -43,19 +41,28 @@ public class StudentServiceImpl implements StudentService {
             }
             studentDto.setBirthDate(birthDate);
             InsertOneResult insertOneResult = studentRepository.insertStudent(studentDto);
-            return insertOneResult.wasAcknowledged();
+            boolean acknowledged = insertOneResult.wasAcknowledged();
+            AddStudentResponseDto addStudentResponseDto = new AddStudentResponseDto();
+            if (acknowledged) {
+                addStudentResponseDto.setCode(0);
+                addStudentResponseDto.setText("student inserted successfully");
+            } else {
+                addStudentResponseDto.setCode(-1);
+                addStudentResponseDto.setText("student failed inserted");
+            }
+            return addStudentResponseDto;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
     @Override
-    public Boolean addTermToStudentTerms(StudentTermCourseDto studentTermCourseDto) {
+    public AddTermStudentResponseDto addTermToStudentTerms(String correlation, StudentTermCourseDto studentTermCourseDto) {
 
         String nationalCoe = studentTermCourseDto.getNationalCode();
         String studentNumber = studentTermCourseDto.getStudentNumber();
 
-        StudentDto student = findStudentByNationalCodeAndStudentNumber(nationalCoe,studentNumber);
+        StudentDto student = findStudentByNationalCodeAndStudentNumber(correlation, nationalCoe, studentNumber);
 
         // calculate old terms
         List<Term> oldTerms = student.getTerms() == null ? Collections.emptyList() : student.getTerms();
@@ -89,18 +96,50 @@ public class StudentServiceImpl implements StudentService {
         double totalAverage = (termAverage + oldTermAverageSum) / (numberTermsCount);
         totalAverage = Double.parseDouble(decimalFormat.format(totalAverage));
         List<Document> termDocuments = getTermDocuments(term);
-        studentRepository.addTermToStudent(nationalCoe,studentNumber,totalAverage,termDocuments);
-        return null;
+        UpdateResult updateResult = studentRepository.addTermToStudent(nationalCoe, studentNumber, totalAverage, termDocuments);
+
+        AddTermStudentResponseDto addTermStudentResponseDto = new AddTermStudentResponseDto();
+
+        long modifiedCount = updateResult.getModifiedCount();
+        if (modifiedCount > 0) {
+            addTermStudentResponseDto.setCode(0);
+            addTermStudentResponseDto.setText("student terms added successfully");
+        } else {
+            addTermStudentResponseDto.setCode(-1);
+            addTermStudentResponseDto.setText("student terms added failed");
+        }
+        return addTermStudentResponseDto;
     }
 
     @Override
-    public StudentDto findStudentByNationalCodeAndStudentNumber(String nationalCode, String studentNumber) {
+    public StudentDto findStudentByNationalCodeAndStudentNumber(String correlation, String nationalCode, String studentNumber) {
         Document studentDocument = checkStudentNotFound(nationalCode, studentNumber);
-        try {
-            return objectMapper.readValue(studentDocument.toJson(), StudentDto.class);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        return getStudentFromDocument(studentDocument);
+    }
+
+    @Override
+    public StudentDto findPersonByNationalCode(String correlation, String nationalCode) {
+        Document studentDocument = checkStudentNotFoundWithNationalCode(nationalCode);
+        return getStudentFromDocument(studentDocument);
+    }
+
+    @Override
+    public StudentDto findPersonByStudentNumber(String correlation, String studentNumber) {
+        Document studentDocument = checkStudentNotFoundWithStudentNumber(studentNumber);
+        return getStudentFromDocument(studentDocument);
+    }
+
+    @Override
+    public StudentResponse findAllStudents(String correlation) {
+        List<Document> studentDocuments = studentRepository.findAllStudents();
+        StudentResponse studentResponse = new StudentResponse();
+        List<StudentDto> students = new ArrayList<>();
+        for (Document studentDocument : studentDocuments) {
+            students.add(getStudentFromDocument(studentDocument));
         }
+        studentResponse.setStudents(students);
+        return studentResponse;
+
     }
 
     private Document checkStudentNotFound(String nationalCode, String studentNumber) {
@@ -108,6 +147,24 @@ public class StudentServiceImpl implements StudentService {
                 nationalCode, studentNumber);
         if (studentDocument == null) {
             throw new ResourceNotFoundException(String.format("student with nationalCode %s and studentNumber %s does not exist", nationalCode, studentNumber));
+        }
+        return studentDocument;
+    }
+
+    private Document checkStudentNotFoundWithNationalCode(String nationalCode) {
+        Document studentDocument = studentRepository.getStudentByNationalCode(
+                nationalCode);
+        if (studentDocument == null) {
+            throw new ResourceNotFoundException(String.format("student with nationalCode %s  does not exist", nationalCode));
+        }
+        return studentDocument;
+    }
+
+    private Document checkStudentNotFoundWithStudentNumber(String studentNumber) {
+        Document studentDocument = studentRepository.getStudentByStudentNumber(
+                studentNumber);
+        if (studentDocument == null) {
+            throw new ResourceNotFoundException(String.format("student with studentNumber %s  does not exist", studentNumber));
         }
         return studentDocument;
     }
@@ -136,5 +193,13 @@ public class StudentServiceImpl implements StudentService {
         termDocument.put("courses", courseDocuments);
         termDocuments.add(termDocument);
         return termDocuments;
+    }
+
+    private StudentDto getStudentFromDocument(Document studentDocument) {
+        try {
+            return objectMapper.readValue(studentDocument.toJson(), StudentDto.class);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

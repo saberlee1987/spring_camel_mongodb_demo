@@ -10,5 +10,8 @@ import java.util.List;
 public interface StudentRepository {
     InsertOneResult insertStudent(StudentDto studentDto);
     Document getStudentByNationalCodeAndStudentNumber(String nationalCode, String studentNumber);
+    Document getStudentByNationalCode(String nationalCode);
+    Document getStudentByStudentNumber(String studentNumber);
     UpdateResult addTermToStudent(String nationalCode, String studentNumber, Double totalAverage, List<Document> termDocuments);
+    List<Document> findAllStudents();
 }

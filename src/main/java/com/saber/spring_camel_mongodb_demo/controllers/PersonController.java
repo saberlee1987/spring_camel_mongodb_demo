@@ -30,7 +30,7 @@ import java.util.UUID;
 
 @RestController
 @Validated
-@Tag(name = "${spring.application.name}", description = "${spring.application.name}")
+@Tag(name = "${spring.application.name}(person)", description = "person api")
 @RequestMapping(value = "${service.api.base-path}/person", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @RequiredArgsConstructor

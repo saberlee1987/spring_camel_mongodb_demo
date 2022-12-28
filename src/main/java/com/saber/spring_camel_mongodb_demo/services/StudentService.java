@@ -1,10 +1,12 @@
 package com.saber.spring_camel_mongodb_demo.services;
 
-import com.saber.spring_camel_mongodb_demo.dto.StudentDto;
-import com.saber.spring_camel_mongodb_demo.dto.StudentTermCourseDto;
+import com.saber.spring_camel_mongodb_demo.dto.*;
 
 public interface StudentService {
-    Boolean insertStudent(StudentDto studentDto);
-    Boolean addTermToStudentTerms(StudentTermCourseDto studentTermCourseDto);
-    StudentDto findStudentByNationalCodeAndStudentNumber(String nationalCode,String studentNumber);
+    AddStudentResponseDto insertStudent(String correlation , StudentDto studentDto);
+    AddTermStudentResponseDto addTermToStudentTerms(String correlation , StudentTermCourseDto studentTermCourseDto);
+    StudentDto findStudentByNationalCodeAndStudentNumber(String correlation,String nationalCode,String studentNumber);
+    StudentDto findPersonByNationalCode(String correlation, String nationalCode);
+    StudentDto findPersonByStudentNumber(String correlation, String studentNumber);
+    StudentResponse findAllStudents(String correlation);
 }
