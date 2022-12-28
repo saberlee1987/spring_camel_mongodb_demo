@@ -1,19 +1,16 @@
 package com.saber.spring_camel_mongodb_demo.repositories.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.saber.spring_camel_mongodb_demo.dto.StudentDto;
-import com.saber.spring_camel_mongodb_demo.dto.Term;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.repositories.StudentRepository;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -21,9 +18,6 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     @Autowired
     private MongoClient mongoClient;
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Override
     public InsertOneResult insertStudent(StudentDto studentDto) {
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
@@ -47,31 +41,17 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public UpdateResult addTermToStudent(String nationalCode, String studentNumber, Double totalAverage, List<Term> terms) {
-
-
-        List<Document> termsDocument = new ArrayList<>();
-        Document termDocument = new Document();
-
-        for (Term term : terms) {
-            //term.
-        }
-
+    public UpdateResult addTermToStudent(String nationalCode, String studentNumber, Double totalAverage, List<Document> termDocuments) {
 
         Document updateDocument = new Document();
-        //BasicDBObject basicDBObject = new BasicDBObject();
-        //Gson gson = new Gson();
 
+        Document termsDocument = new Document();
+        Document eachDocument = new Document();
+        eachDocument.append("$each", termDocuments);
+        termsDocument.append("terms", eachDocument);
 
-        // Object[] termDocuments = (Object[]) JSON.parse(gson.toJson(terms));
-
-
-        //BasicDBList termsObj = new BasicDBList();
-//        basicDBObject.put("terms",terms);
-        //termDocument.put("terms", termsObj);
-        //termDocument.put("totalAverage", totalAverage);
-       // updateDocument.put("$push", basicDBObject);
-
+        updateDocument.put("$addToSet", termsDocument);
+        updateDocument.put("$set", new Document().append("totalAverage",totalAverage));
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
         MongoCollection<Document> student = mydB.getCollection("student");
         return student.updateOne(Filters.and(

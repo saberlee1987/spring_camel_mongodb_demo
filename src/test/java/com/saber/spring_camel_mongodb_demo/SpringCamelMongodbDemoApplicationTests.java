@@ -1,7 +1,5 @@
 package com.saber.spring_camel_mongodb_demo;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saber.spring_camel_mongodb_demo.dto.*;
 import com.saber.spring_camel_mongodb_demo.repositories.StudentRepository;
 import com.saber.spring_camel_mongodb_demo.routes.Headers;
@@ -9,11 +7,14 @@ import com.saber.spring_camel_mongodb_demo.routes.Routes;
 import com.saber.spring_camel_mongodb_demo.services.StudentService;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,9 +27,6 @@ class SpringCamelMongodbDemoApplicationTests {
     private StudentService studentService;
     @Autowired
     private StudentRepository studentRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     //@Test
     void contextLoads() {
@@ -88,56 +86,65 @@ class SpringCamelMongodbDemoApplicationTests {
         String nationalCode = "0079028748";
         String studentNumber = "943175737";
         StudentDto student = studentService.findStudentByNationalCodeAndStudentNumber(nationalCode, studentNumber);
-        double totalAverage = student.getTotalAverage() == null ? 0 : student.getTotalAverage();
-        Term term = new Term();
-        term.setTermNumber(1);
-        List<Course> courses = new ArrayList<>();
-        courses.add(new Course("java", 19.5, 3));
-        courses.add(new Course("php", 17.5, 2));
-        term.setCourses(courses);
-        List<Term> terms = student.getTerms();
-        if (terms == null) {
-            terms = new ArrayList<>();
+
+        // calculate old terms
+        List<Term> oldTerms = student.getTerms() == null ? Collections.emptyList() : student.getTerms();
+        int numberTermsCount = oldTerms.size();
+        int numberTerm = numberTermsCount + 1;
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        Double oldTermAverageSum = 0.00;
+        for (Term oldTerm : oldTerms) {
+            oldTermAverageSum += oldTerm.getAverage();
         }
 
+
+        // add term from user
+        Term term = new Term();
+        term.setTermNumber(numberTerm);
+        // add course from user
+        List<Course> courses = new ArrayList<>();
+        courses.add(new Course("java3", 16.56, 3));
+        courses.add(new Course("php3", 17.57, 2));
+        courses.add(new Course("c#3", 16.58, 3));
+        term.setCourses(courses);
+        // add course from user
+
+        int numberUnitCourses = 0;
         double averageSum = 0.0;
         for (Course course : term.getCourses()) {
+            numberUnitCourses += course.getNumberUnitCourse();
             averageSum += course.getNumberUnitCourse() * course.getScore();
-            term.setAverage(averageSum);
         }
-        terms.add(term);
+        Double termAverage = averageSum / numberUnitCourses;
+        termAverage = Double.parseDouble(decimalFormat.format(termAverage));
+        term.setAverage(termAverage);
+        // add term from user
 
-        totalAverage += averageSum;
-        studentRepository.addTermToStudent("0079028748", "943175737", totalAverage, terms);
+        numberTermsCount += 1;
+        double totalAverage = (termAverage + oldTermAverageSum) / (numberTermsCount);
+        totalAverage = Double.parseDouble(decimalFormat.format(totalAverage));
+
+        List<Document> termDocuments = getTermDocuments(term);
+
+        studentRepository.addTermToStudent("0079028748", "943175737", totalAverage, termDocuments);
     }
 
-    @Test
-    void testJson() {
-
-        String json = "[{\"courses\":[{\"title\":\"java\",\"score\":19.5,\"numberUnitCourse\":3},{\"title\":\"php\",\"score\":17.5,\"numberUnitCourse\":2}],\"termNumber\":1,\"average\":93.5}]";
-        json = "{\n" +
-                "         \"studentNumber\" : \"943175737\",\n" +
-                "        \"field\" : \"computer\",\n" +
-                "        \"firstName\" : \"saber\",\n" +
-                "        \"lastName\" : \"Azizi\",\n" +
-                "        \"nationalCode\" : \"0079028748\",\n" +
-                "        \"age\" : 35,\n" +
-                "        \"email\" : \"saberazizi66@yahoo.com\",\n" +
-                "        \"mobile\" : \"09365627895\",\n" +
-                "        \"country\" : \"iran\",\n" +
-                "        \"language\" : \"persian\",\n" +
-                "        \"birthDate\" : \"1987-12-07\",\n" +
-                "        \"terms\" : \"[{\\\"courses\\\":[{\\\"title\\\":\\\"java\\\",\\\"score\\\":19.5,\\\"numberUnitCourse\\\":3},{\\\"title\\\":\\\"php\\\",\\\"score\\\":17.5,\\\"numberUnitCourse\\\":2}],\\\"termNumber\\\":1,\\\"average\\\":93.5}]\",\n" +
-                "        \"totalAverage\" : 93.5\n" +
-                "}";
-       try {
-           StudentDto studentDto= objectMapper.readValue(json, new TypeReference<StudentDto>() {
-           });
-           System.out.println(studentDto);
-       }catch (Exception ex){
-           ex.printStackTrace();
-       }
-
-
+    private List<Document> getTermDocuments(Term term) {
+        List<Document> termDocuments = new ArrayList<>();
+        Document termDocument = new Document();
+        termDocument.put("termNumber", term.getTermNumber());
+        termDocument.put("average", term.getAverage());
+        List<Document> courseDocuments = new ArrayList<>();
+        for (Course course : term.getCourses()) {
+            Document courseDocument = new Document();
+            courseDocument.put("title", course.getTitle());
+            courseDocument.put("score", course.getScore());
+            courseDocument.put("numberUnitCourse", course.getNumberUnitCourse());
+            courseDocuments.add(courseDocument);
+        }
+        termDocument.put("courses", courseDocuments);
+        termDocuments.add(termDocument);
+        return termDocuments;
     }
 }
