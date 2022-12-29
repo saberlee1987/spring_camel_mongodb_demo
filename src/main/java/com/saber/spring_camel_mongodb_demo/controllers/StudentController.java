@@ -168,12 +168,14 @@ public class StudentController {
                                     "  \"firstName\": \"saber\",\n" +
                                     "  \"lastName\": \"Azizi\",\n" +
                                     "  \"nationalCode\": \"0079028748\",\n" +
+                                    "   \"studentNumber\": \"943175737\",\n" +
+                                    "   \"field\" : \"computer\",\n" +
                                     "  \"age\": 35,\n" +
                                     "  \"email\": \"saberazizi66@yahoo.com\",\n" +
                                     "  \"mobile\": \"09365627895\",\n" +
-                                    "   \"country\": \"iran\",\n" +
-                                    "   \"language\" : \"persian\",\n" +
-                                    "   \"birthDate\" : \"1366/09/16\" \n" +
+                                    "  \"country\": \"iran\",\n" +
+                                    "  \"language\": \"persian\",\n" +
+                                    "  \"birthDate\": \"1366/09/16\"\n" +
                                     "}")
                     )
             ))
@@ -204,8 +206,7 @@ public class StudentController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "addTermToStudent",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(name = "addTermToStudent", title = "addTermToStudent", implementation = StudentTermCourseDto.class)
-                            , examples = @ExampleObject(name = "updatePerson by nationalCode", summary = "updatePerson by nationalCode",
-                            value = "")
+                            , examples = @ExampleObject(name = "updatePerson by nationalCode", summary = "updatePerson by nationalCode")
                     )
             ))
     @ApiResponses(value = {
@@ -231,7 +232,7 @@ public class StudentController {
     }
 
     private String getCorrelation(HttpServletRequest httpServletRequest) {
-        String correlation = "";
+        String correlation;
         correlation = httpServletRequest.getHeader(Headers.correlation);
         if (correlation == null || correlation.isEmpty()) {
             correlation = UUID.randomUUID().toString();

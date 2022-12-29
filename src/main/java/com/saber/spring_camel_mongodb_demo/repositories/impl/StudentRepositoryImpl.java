@@ -22,7 +22,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public InsertOneResult insertStudent(StudentDto studentDto) {
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> student = mydB.getCollection("student");
+        MongoCollection<Document> student = mydB.getCollection("students");
         MongoCursor<Document> studentCursor = getStudentCursorByNationalCodeAndStudentNumber(studentDto.getNationalCode(), studentDto.getStudentNumber());
         int available = studentCursor.available();
         if (available > 0) {
@@ -72,7 +72,7 @@ public class StudentRepositoryImpl implements StudentRepository {
         updateDocument.put("$addToSet", termsDocument);
         updateDocument.put("$set", new Document().append("totalAverage",totalAverage));
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> student = mydB.getCollection("student");
+        MongoCollection<Document> student = mydB.getCollection("students");
         return student.updateOne(Filters.and(
                 Filters.eq("nationalCode", nationalCode),
                 Filters.eq("studentNumber", studentNumber)
@@ -83,7 +83,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public List<Document> findAllStudents() {
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> student = mydB.getCollection("student");
+        MongoCollection<Document> student = mydB.getCollection("students");
         FindIterable<Document> documents = student.find();
         List<Document> studentDocuments = new ArrayList<>();
         MongoCursor<Document> cursor = documents.cursor();
@@ -95,7 +95,7 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     private MongoCursor<Document> getStudentCursorByNationalCodeAndStudentNumber(String nationalCode, String studentNumber) {
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> student = mydB.getCollection("student");
+        MongoCollection<Document> student = mydB.getCollection("students");
         FindIterable<Document> studentDocuments = student.find(
                 Filters.and(
                         Filters.eq("nationalCode", nationalCode),
@@ -107,14 +107,14 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     private MongoCursor<Document> getStudentCursorByNationalCode(String nationalCode) {
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> student = mydB.getCollection("student");
+        MongoCollection<Document> student = mydB.getCollection("students");
         FindIterable<Document> studentDocuments = student.find(Filters.eq("nationalCode", nationalCode));
         return studentDocuments.cursor();
     }
 
     private MongoCursor<Document> getStudentCursorByStudentNumber(String studentNumber) {
         MongoDatabase mydB = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> student = mydB.getCollection("student");
+        MongoCollection<Document> student = mydB.getCollection("students");
         FindIterable<Document> studentDocuments = student.find(Filters.eq("studentNumber", studentNumber));
         return studentDocuments.cursor();
     }

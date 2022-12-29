@@ -24,3 +24,19 @@ login :
 
 net start mongodb
 net stop mongodb
+
+/// crate user in mongodb
+
+db.createUser({
+                 "user" : "saber66",
+                 "pwd" : "AdminSaber66",
+                "roles" : [
+                            {  "role" : "readWriteAnyDatabase",
+                                    "db" : "admin"
+                            },
+                            {
+                            "role" : "userAdminAnyDatabase",
+                              "db" : "admin"
+                            }
+                         ]
+})

@@ -171,7 +171,7 @@ public class StudentServiceImpl implements StudentService {
 
     private void checkStudentDuplicate(String nationalCode, String studentNumber) {
         if (studentRepository.getStudentByNationalCodeAndStudentNumber(
-                nationalCode, studentNumber) == null) {
+                nationalCode, studentNumber) != null) {
             throw new ResourceDuplicationException(String.format("student with nationalCode %s and studentNumber %s already exist",
                     nationalCode, studentNumber));
         }
