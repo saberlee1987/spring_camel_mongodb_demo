@@ -8,9 +8,9 @@ import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationExcepti
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import com.saber.spring_camel_mongodb_demo.repositories.StudentRepository;
 import com.saber.spring_camel_mongodb_demo.services.StudentService;
-import com.saber.spring_camel_mongodb_demo.utility.DateUtility;
+import com.saber.spring_camel_mongodb_demo.utility.PersianDateConverter;
+import lombok.RequiredArgsConstructor;
 import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
@@ -19,27 +19,21 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
-    @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private DateUtility dateUtility;
+    private final StudentRepository studentRepository;
+    private final ObjectMapper objectMapper;
+    private final PersianDateConverter persianDateConverter;
+
 
     @Override
     public AddStudentResponseDto insertStudent(String correlation, StudentDto studentDto) {
         checkStudentDuplicate(studentDto.getNationalCode(), studentDto.getStudentNumber());
+        String birthDate = persianDateConverter.convertPersianDateToGeorgian(studentDto.getCountry(),
+                                            studentDto.getLanguage(), studentDto.getBirthDate());
+        studentDto.setBirthDate(birthDate);
         try {
-            String country = studentDto.getCountry();
-            String language = studentDto.getLanguage();
-            String birthDate = studentDto.getBirthDate();
-            if (country.trim().toLowerCase().startsWith("ir") &&
-                    (language.toLowerCase().trim().startsWith("per") || language.toLowerCase().trim().startsWith("fa"))) {
-                birthDate = dateUtility.convertPersianToGregorianDate(birthDate);
-            }
-            studentDto.setBirthDate(birthDate);
             InsertOneResult insertOneResult = studentRepository.insertStudent(studentDto);
             boolean acknowledged = insertOneResult.wasAcknowledged();
             AddStudentResponseDto addStudentResponseDto = new AddStudentResponseDto();

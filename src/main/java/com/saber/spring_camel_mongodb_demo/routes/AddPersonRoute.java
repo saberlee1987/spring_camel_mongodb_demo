@@ -2,7 +2,6 @@ package com.saber.spring_camel_mongodb_demo.routes;
 
 import com.saber.spring_camel_mongodb_demo.dto.AddPersonResponseDto;
 import com.saber.spring_camel_mongodb_demo.dto.PersonDto;
-import com.saber.spring_camel_mongodb_demo.utility.DateUtility;
 import lombok.AllArgsConstructor;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.mongodb.MongoDbConstants;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class AddPersonRoute extends AbstractRestRouteBuilder {
 
-    private final DateUtility dateUtility;
 
     @Override
     public void configure() throws Exception {

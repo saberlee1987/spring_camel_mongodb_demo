@@ -3,6 +3,7 @@ package com.saber.spring_camel_mongodb_demo.advicer;
 import com.saber.spring_camel_mongodb_demo.dto.ErrorResponse;
 import com.saber.spring_camel_mongodb_demo.dto.ServiceErrorResponseEnum;
 import com.saber.spring_camel_mongodb_demo.dto.ValidationDto;
+import com.saber.spring_camel_mongodb_demo.exceptions.BadRequestException;
 import com.saber.spring_camel_mongodb_demo.exceptions.GatewayException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
@@ -32,27 +33,27 @@ public class MyControllerAdvice extends ResponseEntityExceptionHandler {
         ErrorResponse errorResponse = gatewayException.getErrorResponse();
 
         log.error("Error for  correlation : {} , GatewayException with statusCode {} , body {} "
-                ,gatewayException.getCorrelation()
+                , gatewayException.getCorrelation()
                 , statusCode, errorResponse);
         return ResponseEntity.status(statusCode).body(errorResponse);
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception){
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception) {
 
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setCode(ServiceErrorResponseEnum.INPUT_VALIDATION_EXCEPTION.getCode());
         errorResponse.setMessage(ServiceErrorResponseEnum.INPUT_VALIDATION_EXCEPTION.getMessage());
         List<ValidationDto> validationDtoList = new ArrayList<>();
         for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
-            ValidationDto validationDto  = new ValidationDto();
+            ValidationDto validationDto = new ValidationDto();
             validationDto.setFieldName(violation.getPropertyPath().toString());
             validationDto.setDetailMessage(violation.getMessage());
             validationDtoList.add(validationDto);
         }
         errorResponse.setValidations(validationDtoList);
 
-        log.error("Error for handleConstraintViolationException with body ===> {}",errorResponse);
+        log.error("Error for handleConstraintViolationException with body ===> {}", errorResponse);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
@@ -64,14 +65,14 @@ public class MyControllerAdvice extends ResponseEntityExceptionHandler {
         errorResponse.setMessage(ServiceErrorResponseEnum.INPUT_VALIDATION_EXCEPTION.getMessage());
         List<ValidationDto> validationDtoList = new ArrayList<>();
         for (FieldError fieldError : exception.getFieldErrors()) {
-            ValidationDto validationDto  = new ValidationDto();
+            ValidationDto validationDto = new ValidationDto();
             validationDto.setFieldName(fieldError.getField());
             validationDto.setDetailMessage(fieldError.getDefaultMessage());
             validationDtoList.add(validationDto);
         }
         errorResponse.setValidations(validationDtoList);
 
-        log.error("Error for handleMethodArgumentNotValid with body ===> {}",errorResponse);
+        log.error("Error for handleMethodArgumentNotValid with body ===> {}", errorResponse);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
@@ -98,5 +99,26 @@ public class MyControllerAdvice extends ResponseEntityExceptionHandler {
         log.error("ResourceNotFoundException error ====> {}", errorResponse);
 
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errorResponse);
+    }
+
+    @ExceptionHandler(value = BadRequestException.class)
+    public ResponseEntity<?> badRequestException(BadRequestException exception) {
+        log.error("BadRequestException error ====> {}", exception.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setMessage(HttpStatus.BAD_REQUEST.toString());
+
+        List<ValidationDto> validationDtoList = new ArrayList<>();
+
+        ValidationDto validationDto = new ValidationDto();
+        validationDto.setFieldName(exception.getFieldName());
+        validationDto.setDetailMessage(exception.getDetailMessage());
+        validationDtoList.add(validationDto);
+
+        errorResponse.setValidations(validationDtoList);
+
+        log.error("BadRequestException error ====> {}", errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
