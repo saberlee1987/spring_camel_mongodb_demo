@@ -1,4 +1,4 @@
-package com.saber.spring_camel_mongodb_demo.dto;
+package com.saber.spring_camel_mongodb_demo.dto.person;
 
 import lombok.Data;
 

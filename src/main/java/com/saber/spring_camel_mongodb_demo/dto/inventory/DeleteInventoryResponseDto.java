@@ -1,4 +1,4 @@
-package com.saber.spring_camel_mongodb_demo.dto;
+package com.saber.spring_camel_mongodb_demo.dto.inventory;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
@@ -13,10 +13,10 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @NotBlank
-public class DeletePersonResponseDto {
+public class DeleteInventoryResponseDto {
     private Integer code;
     private String text;
-    private Integer deletedCount;
+    private Long deletedCount;
 
     @Override
     public String toString() {
@@ -26,6 +26,6 @@ public class DeletePersonResponseDto {
                 .enableComplexMapKeySerialization()
                 .setLongSerializationPolicy(LongSerializationPolicy.DEFAULT)
                 .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-                .create().toJson(this, DeletePersonResponseDto.class);
+                .create().toJson(this, DeleteInventoryResponseDto.class);
     }
 }

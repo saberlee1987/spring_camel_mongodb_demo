@@ -1,7 +1,7 @@
 package com.saber.spring_camel_mongodb_demo.routes;
 
-import com.saber.spring_camel_mongodb_demo.dto.AddPersonResponseDto;
-import com.saber.spring_camel_mongodb_demo.dto.PersonDto;
+import com.saber.spring_camel_mongodb_demo.dto.person.AddPersonResponseDto;
+import com.saber.spring_camel_mongodb_demo.dto.person.PersonDto;
 import lombok.AllArgsConstructor;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.mongodb.MongoDbConstants;

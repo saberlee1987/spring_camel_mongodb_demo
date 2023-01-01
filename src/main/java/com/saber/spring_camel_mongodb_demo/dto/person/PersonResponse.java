@@ -1,21 +1,17 @@
-package com.saber.spring_camel_mongodb_demo.dto;
+package com.saber.spring_camel_mongodb_demo.dto.person;
+
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.google.gson.ToNumberPolicy;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@NotBlank
-public class AddTermStudentResponseDto {
-    private Integer code;
-    private String text;
+public class PersonResponse {
+    private List<PersonDto> persons ;
+
 
     @Override
     public String toString() {
@@ -25,6 +21,6 @@ public class AddTermStudentResponseDto {
                 .enableComplexMapKeySerialization()
                 .setLongSerializationPolicy(LongSerializationPolicy.DEFAULT)
                 .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-                .create().toJson(this, AddTermStudentResponseDto.class);
+                .create().toJson(this, PersonResponse.class);
     }
 }

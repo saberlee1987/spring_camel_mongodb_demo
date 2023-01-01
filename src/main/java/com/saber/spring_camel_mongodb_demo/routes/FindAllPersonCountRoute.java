@@ -3,7 +3,7 @@ package com.saber.spring_camel_mongodb_demo.routes;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.saber.spring_camel_mongodb_demo.dto.ConditionEnum;
-import com.saber.spring_camel_mongodb_demo.dto.PersonResponseCountDto;
+import com.saber.spring_camel_mongodb_demo.dto.person.PersonResponseCountDto;
 import com.saber.spring_camel_mongodb_demo.exceptions.BadRequestException;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.mongodb.MongoDbConstants;

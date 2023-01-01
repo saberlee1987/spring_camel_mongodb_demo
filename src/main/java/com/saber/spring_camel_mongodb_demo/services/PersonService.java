@@ -1,6 +1,7 @@
 package com.saber.spring_camel_mongodb_demo.services;
 
 import com.saber.spring_camel_mongodb_demo.dto.*;
+import com.saber.spring_camel_mongodb_demo.dto.person.*;
 
 public interface PersonService {
     PersonResponse findAllPerson(String correlation);
@@ -10,8 +11,8 @@ public interface PersonService {
     PersonResponseCountDto findAllPersonByCountryCount(String correlation, String country);
     PersonResponseCountDto findAllPersonByAgeWithConditionCount(String correlation, Integer age, ConditionEnum conditionEnum);
     PersonResponseCountDto findAllPersonByCountryAndLanguageCount(String correlation, String country,String language);
-    PersonDto findPersonByNationalCode(String correlation,String nationalCode);
-    AddPersonResponseDto addPerson(PersonDto personDto,String correlation);
+    PersonDto findPersonByNationalCode(String correlation, String nationalCode);
+    AddPersonResponseDto addPerson(PersonDto personDto, String correlation);
     UpdatePersonResponseDto updatePerson(PersonDto personDto,String correlation);
-    DeletePersonResponseDto deletePerson(String correlation,String nationalCode);
+    DeletePersonResponseDto deletePerson(String correlation, String nationalCode);
 }

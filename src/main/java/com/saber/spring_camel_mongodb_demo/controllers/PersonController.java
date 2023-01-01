@@ -2,6 +2,7 @@ package com.saber.spring_camel_mongodb_demo.controllers;
 
 
 import com.saber.spring_camel_mongodb_demo.dto.*;
+import com.saber.spring_camel_mongodb_demo.dto.person.*;
 import com.saber.spring_camel_mongodb_demo.routes.Headers;
 import com.saber.spring_camel_mongodb_demo.services.PersonService;
 import io.swagger.v3.oas.annotations.Operation;

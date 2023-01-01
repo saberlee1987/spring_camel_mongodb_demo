@@ -1,6 +1,6 @@
 package com.saber.spring_camel_mongodb_demo.routes;
 
-import com.saber.spring_camel_mongodb_demo.dto.PersonDto;
+import com.saber.spring_camel_mongodb_demo.dto.person.PersonDto;
 import com.saber.spring_camel_mongodb_demo.utility.PersianDateConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.saber.spring_camel_mongodb_demo.routes;
 
-import com.saber.spring_camel_mongodb_demo.dto.PersonResponse;
+import com.saber.spring_camel_mongodb_demo.dto.person.PersonResponse;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.mongodb.MongoDbConstants;
 import org.apache.camel.model.dataformat.JsonLibrary;

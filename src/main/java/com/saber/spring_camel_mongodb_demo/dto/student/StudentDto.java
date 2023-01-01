@@ -1,21 +1,21 @@
-package com.saber.spring_camel_mongodb_demo.dto;
+package com.saber.spring_camel_mongodb_demo.dto.student;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.google.gson.ToNumberPolicy;
-import lombok.AllArgsConstructor;
+import com.saber.spring_camel_mongodb_demo.dto.person.PersonDto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@NotBlank
-public class AddStudentResponseDto {
-    private Integer code;
-    private String text;
+public class StudentDto extends PersonDto {
+    private String studentNumber;
+    private String field;
+    private List<Term> terms;
+    private Double totalAverage;
 
     @Override
     public String toString() {
@@ -25,6 +25,7 @@ public class AddStudentResponseDto {
                 .enableComplexMapKeySerialization()
                 .setLongSerializationPolicy(LongSerializationPolicy.DEFAULT)
                 .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-                .create().toJson(this, AddStudentResponseDto.class);
+                .create().toJson(this, StudentDto.class);
     }
+
 }

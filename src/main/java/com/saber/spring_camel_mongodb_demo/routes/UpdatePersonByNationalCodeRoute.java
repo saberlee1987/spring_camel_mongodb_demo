@@ -1,8 +1,8 @@
 package com.saber.spring_camel_mongodb_demo.routes;
 
 import com.mongodb.client.model.Filters;
-import com.saber.spring_camel_mongodb_demo.dto.PersonDto;
-import com.saber.spring_camel_mongodb_demo.dto.UpdatePersonResponseDto;
+import com.saber.spring_camel_mongodb_demo.dto.person.PersonDto;
+import com.saber.spring_camel_mongodb_demo.dto.person.UpdatePersonResponseDto;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.mongodb.MongoDbConstants;
 import org.apache.camel.model.dataformat.JsonLibrary;

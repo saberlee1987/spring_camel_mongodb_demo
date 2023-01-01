@@ -1,6 +1,6 @@
 package com.saber.spring_camel_mongodb_demo.services;
 
-import com.saber.spring_camel_mongodb_demo.dto.*;
+import com.saber.spring_camel_mongodb_demo.dto.student.*;
 
 public interface StudentService {
     AddStudentResponseDto insertStudent(String correlation , StudentDto studentDto);

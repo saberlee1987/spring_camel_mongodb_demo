@@ -3,7 +3,7 @@ package com.saber.spring_camel_mongodb_demo.services.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
-import com.saber.spring_camel_mongodb_demo.dto.*;
+import com.saber.spring_camel_mongodb_demo.dto.student.*;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceNotFoundException;
 import com.saber.spring_camel_mongodb_demo.repositories.StudentRepository;

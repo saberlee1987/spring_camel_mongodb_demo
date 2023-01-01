@@ -1,17 +1,23 @@
-package com.saber.spring_camel_mongodb_demo.dto;
+package com.saber.spring_camel_mongodb_demo.dto.person;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
 import com.google.gson.ToNumberPolicy;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 
 @Data
-public class Term {
-    private List<Course> courses;
-    private int termNumber;
-    private Double average;
+@AllArgsConstructor
+@NoArgsConstructor
+@NotBlank
+public class DeletePersonResponseDto {
+    private Integer code;
+    private String text;
+    private Integer deletedCount;
+
     @Override
     public String toString() {
         return new GsonBuilder()
@@ -20,6 +26,6 @@ public class Term {
                 .enableComplexMapKeySerialization()
                 .setLongSerializationPolicy(LongSerializationPolicy.DEFAULT)
                 .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-                .create().toJson(this, Term.class);
+                .create().toJson(this, DeletePersonResponseDto.class);
     }
 }

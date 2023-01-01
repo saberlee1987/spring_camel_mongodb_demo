@@ -1,6 +1,7 @@
 package com.saber.spring_camel_mongodb_demo.services.impl;
 
 import com.saber.spring_camel_mongodb_demo.dto.*;
+import com.saber.spring_camel_mongodb_demo.dto.person.*;
 import com.saber.spring_camel_mongodb_demo.exceptions.GatewayException;
 import com.saber.spring_camel_mongodb_demo.routes.Headers;
 import com.saber.spring_camel_mongodb_demo.routes.Routes;

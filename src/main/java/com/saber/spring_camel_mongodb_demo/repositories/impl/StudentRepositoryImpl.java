@@ -4,7 +4,7 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
-import com.saber.spring_camel_mongodb_demo.dto.StudentDto;
+import com.saber.spring_camel_mongodb_demo.dto.student.StudentDto;
 import com.saber.spring_camel_mongodb_demo.exceptions.ResourceDuplicationException;
 import com.saber.spring_camel_mongodb_demo.repositories.StudentRepository;
 import org.bson.Document;

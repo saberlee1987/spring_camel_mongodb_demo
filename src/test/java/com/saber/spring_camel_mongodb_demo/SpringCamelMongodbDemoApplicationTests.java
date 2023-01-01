@@ -1,6 +1,11 @@
 package com.saber.spring_camel_mongodb_demo;
 
 import com.saber.spring_camel_mongodb_demo.dto.*;
+import com.saber.spring_camel_mongodb_demo.dto.person.PersonResponse;
+import com.saber.spring_camel_mongodb_demo.dto.student.AddStudentResponseDto;
+import com.saber.spring_camel_mongodb_demo.dto.student.Course;
+import com.saber.spring_camel_mongodb_demo.dto.student.StudentDto;
+import com.saber.spring_camel_mongodb_demo.dto.student.Term;
 import com.saber.spring_camel_mongodb_demo.repositories.StudentRepository;
 import com.saber.spring_camel_mongodb_demo.routes.Headers;
 import com.saber.spring_camel_mongodb_demo.routes.Routes;
@@ -11,7 +16,6 @@ import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
